@@ -15,14 +15,12 @@ struct ContentView: View {
     var body: some View {
         
         VStack {
-            Text("Memorize!")
-                .font(.largeTitle)
+            title
             ScrollView {
                 cards
             }
             Spacer()
             themeChooser
-                .font(.largeTitle)
         }
         .padding()
     }
@@ -38,12 +36,18 @@ struct ContentView: View {
         .foregroundStyle(themeColor)
     }
     
+    var title: some View {
+        Text("Memorize!")
+            .font(.largeTitle)
+    }
+    
     var themeChooser: some View {
         HStack(spacing: 30) {
             themeItem(icon: "ladybug.circle.fill", color: .orange, theme: halloweenTheme)
             themeItem(icon: "drop.fill", color: .blue, theme: aquaTheme)
             themeItem(icon: "globe.europe.africa.fill", color: .green, theme: earthTheme)
         }
+        
     }
     
     func themeItem(icon: String, color: Color, theme: [String]) -> some View {
@@ -60,6 +64,7 @@ struct ContentView: View {
                 .font(.caption)
         }
         .foregroundStyle(color)
+        .font(.largeTitle)
     }
     
     func themeName (for color: Color) -> String {
