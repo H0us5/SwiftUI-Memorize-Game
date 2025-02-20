@@ -8,56 +8,67 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙🏻‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
-    @State var cardCount: Int = 4
+    
+    @State var emojis = halloweenTheme
+    @State var themeColor = Color.orange
     
     var body: some View {
+        
         VStack {
+            Text("Memorize!")
+                .font(.largeTitle)
             ScrollView {
                 cards
             }
             Spacer()
-            cardCountAdjusters
+            themeChooser
+                .font(.largeTitle)
         }
         .padding()
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<cardCount, id: \.self) { index in
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
+            ForEach(emojis.indices, id: \.self) { index in
                 CardView(content: emojis[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
-
+            
         }
-        .foregroundStyle(.orange)
+        .foregroundStyle(themeColor)
     }
     
-    var cardCountAdjusters: some View {
-        HStack {
-            cardAdder
-            Spacer()
-            cardRemover
+    var themeChooser: some View {
+        HStack(spacing: 30) {
+            themeItem(icon: "ladybug.circle.fill", color: .orange, theme: halloweenTheme)
+            themeItem(icon: "drop.fill", color: .blue, theme: aquaTheme)
+            themeItem(icon: "globe.europe.africa.fill", color: .green, theme: earthTheme)
         }
-        .imageScale(.large)
-        .font(.largeTitle)
     }
     
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button {
-            cardCount += offset
-        } label: {
-            Image(systemName: symbol)
+    func themeItem(icon: String, color: Color, theme: [String]) -> some View {
+        VStack {
+            Button {
+                themeColor = color
+                emojis = theme.shuffled()
+            } label: {
+                Image(systemName: icon)
+                    .foregroundStyle(color)
+            }
+            .disabled(emojis == theme)
+            Text(themeName(for: color))
+                .font(.caption)
         }
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
+        .foregroundStyle(color)
     }
     
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.stack.fill.badge.minus")
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(by: +1, symbol: "rectangle.stack.fill.badge.plus")
+    func themeName (for color: Color) -> String {
+        switch color {
+        case .orange: return "Halloween"
+        case .blue: return "Aqua"
+        case .green: return "Earth"
+        default: return "Theme"
+        }
     }
 }
 
