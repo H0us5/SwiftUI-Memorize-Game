@@ -25,32 +25,39 @@ struct ContentView: View {
         .padding()
     }
     
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
-            ForEach(emojis.indices, id: \.self) { index in
-                CardView(content: emojis[index])
-                    .aspectRatio(2/3, contentMode: .fit)
-            }
-            
-        }
-        .foregroundStyle(themeColor)
-    }
-    
     var title: some View {
         Text("Memorize!")
             .font(.largeTitle)
     }
     
+    var cards: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: setCardWidth(emojis.count)))]) {
+            ForEach(emojis.indices, id: \.self) { index in
+                CardView(content: emojis[index])
+                    .aspectRatio(2/3, contentMode: .fit)
+            }
+        }
+        .foregroundStyle(themeColor)
+    }
+    
     var themeChooser: some View {
         HStack(spacing: 30) {
-            themeItem(icon: "ladybug.circle.fill", color: .orange, theme: halloweenTheme)
-            themeItem(icon: "drop.fill", color: .blue, theme: aquaTheme)
-            themeItem(icon: "globe.europe.africa.fill", color: .green, theme: earthTheme)
+            setThemeItem(icon: "ladybug.circle.fill", color: .orange, theme: halloweenTheme)
+            setThemeItem(icon: "drop.fill", color: .blue, theme: aquaTheme)
+            setThemeItem(icon: "globe.europe.africa.fill", color: .green, theme: earthTheme)
         }
         
     }
     
-    func themeItem(icon: String, color: Color, theme: [String]) -> some View {
+    func setCardWidth(_ count: Int) -> CGFloat {
+        switch count {
+        case 24...48: return 65;
+        case 12...23: return 80;
+        default: return 100;
+        }
+    }
+    
+    func setThemeItem(icon: String, color: Color, theme: [String]) -> some View {
         VStack {
             Button {
                 themeColor = color
@@ -60,14 +67,14 @@ struct ContentView: View {
                     .foregroundStyle(color)
             }
             .disabled(emojis == theme)
-            Text(themeName(for: color))
+            Text(setThemeName(for: color))
                 .font(.caption)
         }
         .foregroundStyle(color)
         .font(.largeTitle)
     }
     
-    func themeName (for color: Color) -> String {
+    func setThemeName (for color: Color) -> String {
         switch color {
         case .orange: return "Halloween"
         case .blue: return "Aqua"
