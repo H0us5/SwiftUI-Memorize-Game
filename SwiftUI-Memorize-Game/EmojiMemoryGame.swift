@@ -10,18 +10,34 @@ import Observation
 
 @Observable class EmojiMemoryGame  {
     private static var emojis = halloweenTheme
-    var theme = "halloween"
+    var themeColor = Color.orange
+    var score = 0
+    
+    init() {
+        updateTheme()
+    }
+    
+    private func updateTheme() {
+        let currentTheme = Themes.chosenTheme
+        themeColor = currentTheme.color
+        EmojiMemoryGame.emojis = currentTheme.emojis
+    }
     
     private static func createMemoryGame() -> MemoryGame<String> {
-        MemoryGame(numberOfPairsOfCards: 6) {  pairIndex in
+        return MemoryGame(numberOfPairsOfCards: Int.random(in: 2...emojis.count)) {  pairIndex in
             if emojis.indices.contains(pairIndex) {
                 return emojis[pairIndex]
             }
-                return "⁉️"
+            return "⁉️"
         }
     }
     
     private var model = createMemoryGame()
+    
+    func startGame() {
+        updateTheme()
+        model = EmojiMemoryGame.createMemoryGame()
+    }
     
     var cards: Array<MemoryGame<String>.Card> {
         return model.cards
@@ -31,21 +47,6 @@ import Observation
     
     func shuffle() {
         model.shuffle()
-    }
-    
-    func changeTheme(newTheme: String) {
-        theme = newTheme
-        switch newTheme {
-            case "halloween":
-            EmojiMemoryGame.emojis = halloweenTheme
-        case "aqua":
-            EmojiMemoryGame.emojis = aquaTheme
-        case "earth":
-            EmojiMemoryGame.emojis = earthTheme
-        default:
-            EmojiMemoryGame.emojis = halloweenTheme
-        }
-        model = EmojiMemoryGame.createMemoryGame()
     }
     
     func choose(_ card: MemoryGame<String>.Card) {

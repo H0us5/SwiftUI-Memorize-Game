@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
-    @State var themeColor = Color.orange
     
     var viewModel: EmojiMemoryGame
     
@@ -17,16 +16,14 @@ struct EmojiMemoryGameView: View {
             HStack {
                 title
                 Spacer()
-                Button("Shuffle") {
-                    viewModel.shuffle()
-                }
+                scoreLabel
             }
             ScrollView {
                 cards
                     .animation(.default, value: viewModel.cards)
             }
             Spacer()
-            themeChooser
+            newGameButton
         }
         .padding()
     }
@@ -34,6 +31,16 @@ struct EmojiMemoryGameView: View {
     var title: some View {
         Text("Memorize!")
             .font(.largeTitle)
+    }
+    
+    var newGameButton: some View {
+        Button("New Game") {
+            viewModel.startGame()
+        }
+    }
+    
+    var scoreLabel: some View {
+        Text("Score: \(viewModel.score)")
     }
     
     var cards: some View {
@@ -47,17 +54,10 @@ struct EmojiMemoryGameView: View {
                     }
             }
         }
-        .foregroundStyle(themeColor)
+        .foregroundStyle(viewModel.themeColor)
     }
     
-    var themeChooser: some View {
-        HStack(spacing: 30) {
-            setThemeItem(icon: "ladybug.circle.fill", color: .orange, theme: "halloween")
-            setThemeItem(icon: "drop.fill", color: .blue, theme: "aqua")
-            setThemeItem(icon: "globe.europe.africa.fill", color: .green, theme: "earth")
-        }
-        
-    }
+
     
     func setCardWidth(_ count: Int) -> CGFloat {
         switch count {
@@ -65,31 +65,6 @@ struct EmojiMemoryGameView: View {
         case 12...23: return 80;
         case 4...11: return 85;
         default: return 100;
-        }
-    }
-    
-    func setThemeItem(icon: String, color: Color, theme: String) -> some View {
-        VStack {
-            Button {
-                themeColor = color
-                viewModel.changeTheme(newTheme: theme)
-            } label: {
-                Image(systemName: icon)
-                    .foregroundStyle(color)
-            }
-            Text(setThemeName(for: color))
-                .font(.caption)
-        }
-        .foregroundStyle(color)
-        .font(.largeTitle)
-    }
-    
-    func setThemeName (for color: Color) -> String {
-        switch color {
-        case .orange: return "Halloween"
-        case .blue: return "Aqua"
-        case .green: return "Earth"
-        default: return "Theme"
         }
     }
 }
