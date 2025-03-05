@@ -9,7 +9,8 @@ import SwiftUI
 import Observation
 
 @Observable class EmojiMemoryGame  {
-    private static let emojis = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙🏻‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
+    private static var emojis = halloweenTheme
+    var theme = "halloween"
     
     private static func createMemoryGame() -> MemoryGame<String> {
         MemoryGame(numberOfPairsOfCards: 6) {  pairIndex in
@@ -26,10 +27,25 @@ import Observation
         return model.cards
     }
     
-    // MARK: - Intence
+    // MARK: - Intense
     
     func shuffle() {
         model.shuffle()
+    }
+    
+    func changeTheme(newTheme: String) {
+        theme = newTheme
+        switch newTheme {
+            case "halloween":
+            EmojiMemoryGame.emojis = halloweenTheme
+        case "aqua":
+            EmojiMemoryGame.emojis = aquaTheme
+        case "earth":
+            EmojiMemoryGame.emojis = earthTheme
+        default:
+            EmojiMemoryGame.emojis = halloweenTheme
+        }
+        model = EmojiMemoryGame.createMemoryGame()
     }
     
     func choose(_ card: MemoryGame<String>.Card) {

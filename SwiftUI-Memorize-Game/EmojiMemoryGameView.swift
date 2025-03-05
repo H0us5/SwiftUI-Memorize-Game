@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
+    @State var themeColor = Color.orange
     
     var viewModel: EmojiMemoryGame
-    
-    @State var emojis = halloweenTheme
-    @State var themeColor = Color.orange
     
     var body: some View {
         VStack {
@@ -25,6 +23,7 @@ struct EmojiMemoryGameView: View {
             }
             ScrollView {
                 cards
+                    .animation(.default, value: viewModel.cards)
             }
             Spacer()
             themeChooser
@@ -39,10 +38,13 @@ struct EmojiMemoryGameView: View {
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: setCardWidth(viewModel.cards.count)), spacing: 0)]) {
-            ForEach(viewModel.cards.indices, id: \.self) { index in
-                CardView(viewModel.cards[index])
+            ForEach(viewModel.cards) { card in
+                CardView(card)
                     .aspectRatio(2/3, contentMode: .fit)
                     .padding(4)
+                    .onTapGesture {
+                        viewModel.choose(card)
+                    }
             }
         }
         .foregroundStyle(themeColor)
@@ -50,9 +52,9 @@ struct EmojiMemoryGameView: View {
     
     var themeChooser: some View {
         HStack(spacing: 30) {
-            setThemeItem(icon: "ladybug.circle.fill", color: .orange, theme: halloweenTheme)
-            setThemeItem(icon: "drop.fill", color: .blue, theme: aquaTheme)
-            setThemeItem(icon: "globe.europe.africa.fill", color: .green, theme: earthTheme)
+            setThemeItem(icon: "ladybug.circle.fill", color: .orange, theme: "halloween")
+            setThemeItem(icon: "drop.fill", color: .blue, theme: "aqua")
+            setThemeItem(icon: "globe.europe.africa.fill", color: .green, theme: "earth")
         }
         
     }
@@ -66,16 +68,15 @@ struct EmojiMemoryGameView: View {
         }
     }
     
-    func setThemeItem(icon: String, color: Color, theme: [String]) -> some View {
+    func setThemeItem(icon: String, color: Color, theme: String) -> some View {
         VStack {
             Button {
                 themeColor = color
-                emojis = theme.shuffled()
+                viewModel.changeTheme(newTheme: theme)
             } label: {
                 Image(systemName: icon)
                     .foregroundStyle(color)
             }
-            .disabled(emojis == theme)
             Text(setThemeName(for: color))
                 .font(.caption)
         }
@@ -114,6 +115,7 @@ struct CardView: View {
             .opacity(card.isFaceUp ? 1 : 0)
             base.fill().opacity(card.isFaceUp ? 0 : 1)
         }
+        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
     }
 }
 
