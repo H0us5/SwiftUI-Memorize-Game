@@ -37,10 +37,13 @@ struct EmojiMemoryGameView: View {
         Button("New Game") {
             viewModel.startGame()
         }
+        .font(.title2)
+        .buttonStyle(.bordered)
+        .tint(viewModel.themeColor)
     }
     
     var scoreLabel: some View {
-        Text("Score: \(viewModel.score)")
+        Text("Score: \(viewModel.giveScore())")
     }
     
     var cards: some View {
@@ -57,7 +60,7 @@ struct EmojiMemoryGameView: View {
         .foregroundStyle(viewModel.themeColor)
     }
     
-
+    
     
     func setCardWidth(_ count: Int) -> CGFloat {
         switch count {

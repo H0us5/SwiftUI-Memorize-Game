@@ -11,7 +11,6 @@ import Observation
 @Observable class EmojiMemoryGame  {
     private static var emojis = halloweenTheme
     var themeColor = Color.orange
-    var score = 0
     
     init() {
         updateTheme()
@@ -47,6 +46,11 @@ import Observation
     
     func shuffle() {
         model.shuffle()
+    }
+    
+    func giveScore() -> Int{
+        let score = model.showScore()
+        return score
     }
     
     func choose(_ card: MemoryGame<String>.Card) {
