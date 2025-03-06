@@ -11,6 +11,7 @@ import Observation
 @Observable class EmojiMemoryGame  {
     private static var emojis = halloweenTheme
     var themeColor = Color.orange
+    var themeName = "Halloween"
     
     init() {
         updateTheme()
@@ -19,6 +20,7 @@ import Observation
     private func updateTheme() {
         let currentTheme = Themes.chosenTheme
         themeColor = currentTheme.color
+        themeName = currentTheme.name
         EmojiMemoryGame.emojis = currentTheme.emojis
     }
     
